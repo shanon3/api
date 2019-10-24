@@ -6,7 +6,7 @@ exports.plugin = {
     pkg: require('../../package.json'),
     name: 'route-books',
     register: async (server, options, next) => {
-        const basePath = '/api/v1/users/';
+        const basePath = '/api/v1/';
         server.route([
             {
                 method: 'GET',
