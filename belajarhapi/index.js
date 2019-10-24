@@ -47,7 +47,10 @@ const Hapi = require('@hapi/hapi'); //require hapi
                     let panjangRequest = request.payload.panjang; //konversi string ke number
                     let lebarRequest = request.payload.lebar;
                     let hasil = parseInt(panjangRequest) * parseInt(lebarRequest) //bikin variabel penampung nilai luas 
-                    const data = { data: 'rumus persegi',...request.payload, hasilPerhitungan: hasil } //bikin respon berbentuk json
+                    const data = { statusCode: 200, error: '', message: 'Hitung luas persegi', content : {
+                        ...request.payload,
+                        hasil: hasil }  
+                    } //bikin respon berbentuk json
                     return h.response(data).code(200) // return out pun berupa json
             }
         },
@@ -65,13 +68,29 @@ const Hapi = require('@hapi/hapi'); //require hapi
                 console.log(request.payload); //cek parameter inputan form
                     let angkaRequest = request.payload.angka; //konversi string ke number
                     let hasil;
+                    // let statusCode = 200
                     if(parseInt(angkaRequest) % 2 === 1){
                         hasil = 'Bilangan Ganjil';
                     }else{
                         hasil = 'Bilangan Genap';
                     }
-                    const data = { data: 'Menentukan bilangan ganjil genap',...request.payload, hasilAkhir: hasil } //bikin respon berbentuk json
-                    return h.response(data).code(200) // return out pun berupa json
+                    const contentData = { 
+                        statusCode: 200, 
+                        error: '', 
+                        message: 'Hitung ganjil genap', 
+                        content : {
+                            ...request.payload,
+                            hasil: hasil 
+                        }
+                    } //bikin respon berbentuk json
+
+                    // const data = {
+                    //     statusCode: statusCode,
+                    //     error: '',
+                    //     message: 'Hitung luas persegi',
+                    //     content: contentData
+                    // }
+                    return h.response(contentData).code(200) // return out pun berupa json
             }
         }
 ]);
