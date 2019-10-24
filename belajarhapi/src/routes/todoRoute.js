@@ -1,4 +1,6 @@
 const Models = require('../../models/index')
+const joi = require('@hapi/joi')
+
 const todosHandler = async (request, h) => {
     try{   console.log('baca')
         const todos = await Models.Todos.findAll({})
@@ -10,7 +12,7 @@ const todosHandler = async (request, h) => {
 
     const createTodoHandler = async (request, h) => {
         try{
-            const{titleReq, descriptionReq, userIdReq, completedReq, dateReq} = request.payload
+            const{titleReq, descriptionReq, userIdReq, completedReq, dateReq, emailReq} = request.payload
             console.log(request.payload);
             console.log('input')
             const todo = await Models.Todos.create({
@@ -18,7 +20,8 @@ const todosHandler = async (request, h) => {
                 description: descriptionReq,
                 userId: userIdReq,
                 completed: completedReq,
-                date: dateReq
+                dateActivity: dateReq,
+                email: emailReq
             })
             return{
                 data: todo,
@@ -76,8 +79,36 @@ const todosHandler = async (request, h) => {
 
 
 module.exports = [
-    {method: 'GET', path: '/todos', handler: todosHandler},
-    {method: 'POST', path: '/todo', handler: createTodoHandler},
-    {method: 'PUT', path: '/todo/{id}', handler: updateTodoHandler},
+    { method: 'GET', path: '/todos', handler: todosHandler },
+    {
+        method: 'POST', path: '/todo',
+        config: {
+            validate: {
+                payload: {
+                    titleReq: joi.required(),
+                    descriptionReq: joi.string().required(),
+                    userIdReq: joi.number().min(1).required(),
+                    completedReq: joi.boolean().required(),
+                    dateReq: joi.date().required(),
+                    emailReq: joi.string().required()
+                }
+            }
+        },
+        handler: createTodoHandler
+    },
+    {method: 'PUT', path: '/todo/{id}',
+    config: {
+        validate: {
+            payload: {
+                titleReq: joi.required(),
+                descriptionReq: joi.string().required(),
+                userIdReq: joi.number().min(1).required(),
+                completedReq: joi.boolean().required(),
+                dateReq: joi.date().required(),
+                emailReq: joi.string().required()
+            }
+        }
+    },
+    handler: updateTodoHandler},
     {method: 'DELETE', path: '/todo/{id}', handler: deleteTodoHandler},
 ];
